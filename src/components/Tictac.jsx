@@ -9,9 +9,13 @@ export default function Tictac({ boardLength = 3 }) {
 			{board.map((columns, i) => (
 				<div key={i} className='columns'>
 					{columns.map((row, j) => (
-						<div key={j} className='row' onClick={() => handleClick(i, j)}>
+						<button
+							key={j}
+							className='row-btn'
+							onClick={() => handleClick(i, j)}
+						>
 							{row}
-						</div>
+						</button>
 					))}
 				</div>
 			))}

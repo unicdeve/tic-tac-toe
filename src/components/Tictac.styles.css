@@ -8,15 +8,17 @@
 	display: flex;
 }
 
-.tictac-board .columns .row {
+.tictac-board .columns .row-btn {
 	width: 100px;
 	height: 85px;
 	border: 1px solid #fff;
-	font-size: 20px;
-	font-weight: 500;
+	font-size: 50px;
+	font-weight: 600;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	background-color: #1a1a1a;
+	color: #fff;
 }
 
 .tictac-board .status {
@@ -34,9 +36,11 @@
 	cursor: pointer;
 	transition: border-color 0.25s;
 }
+
 .tictac-board .reset-btn:hover {
 	border-color: #646cff;
 }
+
 .tictac-board .reset-btn:focus,
 .tictac-board .reset-btn:focus-visible {
 	outline: 4px auto -webkit-focus-ring-color;

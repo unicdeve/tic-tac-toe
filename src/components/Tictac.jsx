@@ -12,7 +12,7 @@ const generateBoard = (boardLength) => {
 	return board;
 };
 
-const columsToRows = (board) => {
+const columnsToRows = (board) => {
 	const newBoard = [];
 	for (let column = 0; column < board.length; column++) {
 		const currentColumn = board[column];
@@ -42,11 +42,10 @@ const diagonalsToRows = (board) => {
 	return newBoard;
 };
 
+// check all rows the same
 const checkRow = (board) => {
 	for (let i = 0; i < board.length; i++) {
-		// check all rows the same
 		const row = board[i];
-
 		const rowSet = new Set(row);
 
 		if (rowSet.size === 1 && !rowSet.has(undefined)) return true;
@@ -56,18 +55,36 @@ const checkRow = (board) => {
 };
 
 const checkBoard = (board) => {
-	// check all rows the same
 	if (checkRow(board)) return true;
-
-	// check all columns are the same
-	if (checkRow(columsToRows(board))) return true;
-
-	console.log(diagonalsToRows(board));
-
-	// check diagonals are the same
+	if (checkRow(columnsToRows(board))) return true;
 	if (checkRow(diagonalsToRows(board))) return true;
 
 	return false;
+};
+
+const getEmptyCells = (board) => {
+	const emptyCells = [];
+	board.forEach((column, colIndex) => {
+		column.forEach((cell, rowIndex) => {
+			if (!cell) {
+				emptyCells.push([colIndex, rowIndex]);
+			}
+		});
+	});
+	return emptyCells;
+};
+
+const findWinningMove = (board, player) => {
+	const emptyCells = getEmptyCells(board);
+	for (let i = 0; i < emptyCells.length; i++) {
+		const [col, row] = emptyCells[i];
+		const newBoard = board.map((row) => [...row]);
+		newBoard[col][row] = player;
+		if (checkBoard(newBoard)) {
+			return [col, row];
+		}
+	}
+	return null;
 };
 
 export default function Tictac({ boardLength = 3 }) {
@@ -76,17 +93,17 @@ export default function Tictac({ boardLength = 3 }) {
 	const [status, setStatus] = useState(null);
 
 	const handleClick = useCallback(
-		(column, row) => {
-			const newBoard = [...board];
+		(column, row, player = currentPlayer) => {
+			const newBoard = board.map((row) => [...row]);
 
 			if (newBoard[column][row] || status) return;
 
-			newBoard[column][row] = currentPlayer;
+			newBoard[column][row] = player;
 			setBoard(newBoard);
 			const wins = checkBoard(newBoard);
 
 			if (wins) {
-				setStatus(`${currentPlayer} has won the game`);
+				setStatus(`${player} has won the game`);
 			} else {
 				setCurrentPlayer((prev) => (prev === 'x' ? 'o' : 'x'));
 			}
@@ -101,23 +118,21 @@ export default function Tictac({ boardLength = 3 }) {
 	};
 
 	useEffect(() => {
-		if (currentPlayer === 'o' && !status) {
-			const emptyCells = [];
-			board.forEach((column, colIndex) => {
-				column.forEach((cell, rowIndex) => {
-					if (!cell) {
-						emptyCells.push([colIndex, rowIndex]);
-					}
-				});
-			});
+		if (currentPlayer === 'x' || status) return;
 
-			if (emptyCells.length > 0) {
-				const randomMove =
-					emptyCells[Math.floor(Math.random() * emptyCells.length)];
-				setTimeout(() => {
-					handleClick(randomMove[0], randomMove[1], 'o');
-				}, 200);
-			}
+		const winningMove = findWinningMove(board, 'o');
+		const blockingMove = findWinningMove(board, 'x');
+		let computerMove = winningMove || blockingMove;
+
+		if (!computerMove) {
+			const emptyCells = getEmptyCells(board);
+			computerMove = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+		}
+
+		if (computerMove) {
+			setTimeout(() => {
+				handleClick(computerMove[0], computerMove[1], 'o');
+			}, 200);
 		}
 	}, [currentPlayer, status, board, handleClick]);
 

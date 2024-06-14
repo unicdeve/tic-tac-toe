@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import './Tictac.styles.css';
 
 const generateBoard = (boardLength) => {
@@ -99,6 +99,27 @@ export default function Tictac({ boardLength = 3 }) {
 		setCurrentPlayer('x');
 		setStatus(null);
 	};
+
+	useEffect(() => {
+		if (currentPlayer === 'o' && !status) {
+			const emptyCells = [];
+			board.forEach((column, colIndex) => {
+				column.forEach((cell, rowIndex) => {
+					if (!cell) {
+						emptyCells.push([colIndex, rowIndex]);
+					}
+				});
+			});
+
+			if (emptyCells.length > 0) {
+				const randomMove =
+					emptyCells[Math.floor(Math.random() * emptyCells.length)];
+				setTimeout(() => {
+					handleClick(randomMove[0], randomMove[1], 'o');
+				}, 200);
+			}
+		}
+	}, [currentPlayer, status, board, handleClick]);
 
 	return (
 		<div className='tictac-board'>

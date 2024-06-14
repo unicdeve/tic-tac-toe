@@ -1,0 +1,43 @@
+.tictac-board {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.tictac-board .columns {
+	display: flex;
+}
+
+.tictac-board .columns .row {
+	width: 100px;
+	height: 85px;
+	border: 1px solid #fff;
+	font-size: 20px;
+	font-weight: 500;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.tictac-board .status {
+	height: 20px;
+}
+
+.tictac-board .reset-btn {
+	border-radius: 8px;
+	border: 1px solid transparent;
+	padding: 0.6em 1.2em;
+	font-size: 1em;
+	font-weight: 500;
+	font-family: inherit;
+	background-color: #1a1a1a;
+	cursor: pointer;
+	transition: border-color 0.25s;
+}
+.tictac-board .reset-btn:hover {
+	border-color: #646cff;
+}
+.tictac-board .reset-btn:focus,
+.tictac-board .reset-btn:focus-visible {
+	outline: 4px auto -webkit-focus-ring-color;
+}
